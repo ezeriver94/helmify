@@ -2,18 +2,19 @@ package job
 
 import (
 	"fmt"
-	"github.com/arttor/helmify/pkg/helmify"
-	"github.com/arttor/helmify/pkg/processor"
-	"github.com/arttor/helmify/pkg/processor/pod"
-	yamlformat "github.com/arttor/helmify/pkg/yaml"
-	"github.com/iancoleman/strcase"
 	"io"
+	"strings"
+	"text/template"
+
+	"github.com/ezeriver94/helmify/pkg/helmify"
+	"github.com/ezeriver94/helmify/pkg/processor"
+	"github.com/ezeriver94/helmify/pkg/processor/pod"
+	yamlformat "github.com/ezeriver94/helmify/pkg/yaml"
+	"github.com/iancoleman/strcase"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"strings"
-	"text/template"
 )
 
 var jobTempl, _ = template.New("job").Parse(

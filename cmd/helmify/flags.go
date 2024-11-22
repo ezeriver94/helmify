@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/arttor/helmify/pkg/config"
+	"github.com/ezeriver94/helmify/pkg/config"
 )
 
 const helpText = `Helmify parses kubernetes resources from std.in and converts it to a Helm chart.

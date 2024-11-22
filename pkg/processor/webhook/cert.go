@@ -6,9 +6,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/arttor/helmify/pkg/cluster"
-	"github.com/arttor/helmify/pkg/helmify"
-	yamlformat "github.com/arttor/helmify/pkg/yaml"
+	"github.com/ezeriver94/helmify/pkg/cluster"
+	"github.com/ezeriver94/helmify/pkg/helmify"
+	yamlformat "github.com/ezeriver94/helmify/pkg/yaml"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/yaml"

@@ -1,10 +1,11 @@
 package job
 
 import (
-	"github.com/arttor/helmify/internal"
-	"github.com/arttor/helmify/pkg/metadata"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/ezeriver94/helmify/internal"
+	"github.com/ezeriver94/helmify/pkg/metadata"
+	"github.com/stretchr/testify/assert"
 )
 
 const (

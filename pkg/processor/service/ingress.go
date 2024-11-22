@@ -2,15 +2,18 @@ package service
 
 import (
 	"fmt"
-	"github.com/arttor/helmify/pkg/helmify"
-	"github.com/arttor/helmify/pkg/processor"
-	yamlformat "github.com/arttor/helmify/pkg/yaml"
 	"io"
+	"text/template"
+
+	"github.com/ezeriver94/helmify/pkg/helmify"
+	"github.com/ezeriver94/helmify/pkg/processor"
+	yamlformat "github.com/ezeriver94/helmify/pkg/yaml"
+	"github.com/iancoleman/strcase"
 	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"text/template"
+	"k8s.io/utils/ptr"
 )
 
 var ingressTempl, _ = template.New("ingress").Parse(
@@ -40,19 +43,26 @@ func (r ingress) Process(appMeta helmify.AppMetadata, obj *unstructured.Unstruct
 	if err != nil {
 		return true, nil, fmt.Errorf("%w: unable to cast to ingress", err)
 	}
+	values := helmify.Values{}
+
 	meta, err := processor.ProcessObjMeta(appMeta, obj)
 	if err != nil {
 		return true, nil, err
 	}
 	name := appMeta.TrimName(obj.GetName())
-	processIngressSpec(appMeta, &ing.Spec)
+	err = processIngressSpec(name, appMeta, &ing.Spec, &values)
+	if err != nil {
+		return true, nil, err
+	}
+
 	spec, err := yamlformat.Marshal(map[string]interface{}{"spec": &ing.Spec}, 0)
 	if err != nil {
 		return true, nil, err
 	}
 
 	return true, &ingressResult{
-		name: name + ".yaml",
+		name:   name + ".yaml",
+		values: values,
 		data: struct {
 			Meta string
 			Spec string
@@ -60,24 +70,47 @@ func (r ingress) Process(appMeta helmify.AppMetadata, obj *unstructured.Unstruct
 	}, nil
 }
 
-func processIngressSpec(appMeta helmify.AppMetadata, ing *networkingv1.IngressSpec) {
+func processIngressSpec(name string, appMeta helmify.AppMetadata, ing *networkingv1.IngressSpec, values *helmify.Values) error {
+	nameCamel := strcase.ToLowerCamel(name)
 	if ing.DefaultBackend != nil && ing.DefaultBackend.Service != nil {
 		ing.DefaultBackend.Service.Name = appMeta.TemplatedName(ing.DefaultBackend.Service.Name)
 	}
+	if ing.IngressClassName != nil {
+		ing.IngressClassName = ptr.To(fmt.Sprintf("{{ .Values.%s.class }}", nameCamel))
+		values.Add("", name, "class")
+	}
+
 	for i := range ing.Rules {
-		if ing.Rules[i].IngressRuleValue.HTTP != nil {
-			for j := range ing.Rules[i].IngressRuleValue.HTTP.Paths {
-				if ing.Rules[i].IngressRuleValue.HTTP.Paths[j].Backend.Service != nil {
-					ing.Rules[i].IngressRuleValue.HTTP.Paths[j].Backend.Service.Name = appMeta.TemplatedName(ing.Rules[i].IngressRuleValue.HTTP.Paths[j].Backend.Service.Name)
+		rule := ing.Rules[i]
+		if rule.Host != "" {
+			rule.Host = "{{ .Values.ingress.host }}"
+			values.Add("", name, "host")
+		}
+		if rule.IngressRuleValue.HTTP != nil {
+			for j := range rule.IngressRuleValue.HTTP.Paths {
+				if rule.IngressRuleValue.HTTP.Paths[j].Backend.Service != nil {
+					rule.IngressRuleValue.HTTP.Paths[j].Backend.Service.Name = appMeta.TemplatedName(rule.IngressRuleValue.HTTP.Paths[j].Backend.Service.Name)
 				}
 			}
 		}
 	}
+	for i := range ing.TLS {
+		if len(ing.TLS[i].Hosts) == 0 {
+			continue
+		}
+		if len(ing.TLS[i].Hosts) > 1 {
+			return fmt.Errorf("multiple hosts in TLS not supported")
+		}
+		ing.TLS[i].Hosts[0] = "{{ .Values.ingress.host }}"
+	}
+	return nil
+
 }
 
 type ingressResult struct {
-	name string
-	data struct {
+	values helmify.Values
+	name   string
+	data   struct {
 		Meta string
 		Spec string
 	}
@@ -88,7 +121,7 @@ func (r *ingressResult) Filename() string {
 }
 
 func (r *ingressResult) Values() helmify.Values {
-	return helmify.Values{}
+	return r.values
 }
 
 func (r *ingressResult) Write(writer io.Writer) error {

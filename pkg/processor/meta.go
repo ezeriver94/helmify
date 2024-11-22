@@ -8,8 +8,8 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"github.com/arttor/helmify/pkg/helmify"
-	yamlformat "github.com/arttor/helmify/pkg/yaml"
+	"github.com/ezeriver94/helmify/pkg/helmify"
+	yamlformat "github.com/ezeriver94/helmify/pkg/yaml"
 )
 
 const metaTemplate = `apiVersion: %[1]s

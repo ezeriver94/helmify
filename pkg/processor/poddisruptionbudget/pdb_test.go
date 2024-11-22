@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arttor/helmify/pkg/metadata"
+	"github.com/ezeriver94/helmify/pkg/metadata"
 
-	"github.com/arttor/helmify/internal"
+	"github.com/ezeriver94/helmify/internal"
 	"github.com/stretchr/testify/assert"
 )
 

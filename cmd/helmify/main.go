@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/arttor/helmify/pkg/app"
+	"github.com/ezeriver94/helmify/pkg/app"
 	"github.com/sirupsen/logrus"
 )
 

@@ -7,11 +7,11 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/arttor/helmify/pkg/processor/pod"
+	"github.com/ezeriver94/helmify/pkg/processor/pod"
 
-	"github.com/arttor/helmify/pkg/helmify"
-	"github.com/arttor/helmify/pkg/processor"
-	yamlformat "github.com/arttor/helmify/pkg/yaml"
+	"github.com/ezeriver94/helmify/pkg/helmify"
+	"github.com/ezeriver94/helmify/pkg/processor"
+	yamlformat "github.com/ezeriver94/helmify/pkg/yaml"
 	"github.com/iancoleman/strcase"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"

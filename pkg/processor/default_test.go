@@ -1,11 +1,12 @@
 package processor
 
 import (
-	"github.com/arttor/helmify/pkg/config"
 	"testing"
 
-	"github.com/arttor/helmify/internal"
-	"github.com/arttor/helmify/pkg/metadata"
+	"github.com/ezeriver94/helmify/pkg/config"
+
+	"github.com/ezeriver94/helmify/internal"
+	"github.com/ezeriver94/helmify/pkg/metadata"
 	"github.com/stretchr/testify/assert"
 )
 

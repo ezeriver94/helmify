@@ -3,7 +3,7 @@ package security_context
 import (
 	"testing"
 
-	"github.com/arttor/helmify/pkg/helmify"
+	"github.com/ezeriver94/helmify/pkg/helmify"
 	"github.com/stretchr/testify/assert"
 )
 

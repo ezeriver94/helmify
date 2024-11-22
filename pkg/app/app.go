@@ -7,26 +7,26 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/arttor/helmify/pkg/file"
-	"github.com/arttor/helmify/pkg/processor/job"
-	"github.com/arttor/helmify/pkg/processor/poddisruptionbudget"
-	"github.com/arttor/helmify/pkg/processor/statefulset"
+	"github.com/ezeriver94/helmify/pkg/file"
+	"github.com/ezeriver94/helmify/pkg/processor/job"
+	"github.com/ezeriver94/helmify/pkg/processor/poddisruptionbudget"
+	"github.com/ezeriver94/helmify/pkg/processor/statefulset"
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/arttor/helmify/pkg/config"
-	"github.com/arttor/helmify/pkg/decoder"
-	"github.com/arttor/helmify/pkg/helm"
-	"github.com/arttor/helmify/pkg/processor"
-	"github.com/arttor/helmify/pkg/processor/configmap"
-	"github.com/arttor/helmify/pkg/processor/crd"
-	"github.com/arttor/helmify/pkg/processor/daemonset"
-	"github.com/arttor/helmify/pkg/processor/deployment"
-	"github.com/arttor/helmify/pkg/processor/rbac"
-	"github.com/arttor/helmify/pkg/processor/secret"
-	"github.com/arttor/helmify/pkg/processor/service"
-	"github.com/arttor/helmify/pkg/processor/storage"
-	"github.com/arttor/helmify/pkg/processor/webhook"
+	"github.com/ezeriver94/helmify/pkg/config"
+	"github.com/ezeriver94/helmify/pkg/decoder"
+	"github.com/ezeriver94/helmify/pkg/helm"
+	"github.com/ezeriver94/helmify/pkg/processor"
+	"github.com/ezeriver94/helmify/pkg/processor/configmap"
+	"github.com/ezeriver94/helmify/pkg/processor/crd"
+	"github.com/ezeriver94/helmify/pkg/processor/daemonset"
+	"github.com/ezeriver94/helmify/pkg/processor/deployment"
+	"github.com/ezeriver94/helmify/pkg/processor/rbac"
+	"github.com/ezeriver94/helmify/pkg/processor/secret"
+	"github.com/ezeriver94/helmify/pkg/processor/service"
+	"github.com/ezeriver94/helmify/pkg/processor/storage"
+	"github.com/ezeriver94/helmify/pkg/processor/webhook"
 )
 
 // Start - application entrypoint for processing input to a Helm chart.
@@ -72,7 +72,7 @@ func Start(stdin io.Reader, config config.Config) error {
 		file.Walk(config.Files, config.FilesRecursively, func(filename string, fileReader io.Reader) {
 			objects := decoder.Decode(ctx.Done(), fileReader)
 			for obj := range objects {
-				appCtx.Add(obj, filename)
+				appCtx.Add(obj, "")
 			}
 		})
 	} else {

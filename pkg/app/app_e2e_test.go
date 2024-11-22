@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arttor/helmify/pkg/config"
+	"github.com/ezeriver94/helmify/pkg/config"
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/action"
 )
